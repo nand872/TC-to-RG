@@ -48,7 +48,7 @@ import sqlite3
 
 from Crypto.Hash import keccak
 
-import common11 as c
+import rpc as c
 
 OUT_DB = "withdrawals112.db"
 EXPORT_DB = "overlap112.db"
