@@ -2,7 +2,7 @@
 
 ```mermaid
 flowchart TD
-    F["Bank transfer<br/>€2,000"] --> X["Exchange<br/>passport, address,<br/>source of funds"]
+    F["Bank transfer<br/>EUR 2,000"] --> X["Exchange<br/>passport, address,<br/>source of funds"]
     X -->|"withdrawal, public"| A["Address A"]
     A -->|"deposits 1 ETH, public"| P[("Tornado 1 ETH pool<br/>thousands of<br/>identical deposits")]
     P -->|"pays out 1 ETH, public"| B["Address B<br/>brand new, no history"]
@@ -21,7 +21,7 @@ flowchart TD
 
 | # | What happens | Who can see it |
 |---|---|---|
-| 1 | You send euros to an exchange and buy ETH | Only the exchange, your bank, and any authority that asks them |
+| 1 | You send fiat to an exchange and buy ETH | Only the exchange, your bank, and any authority that asks them |
 | 2 | You withdraw the ETH to address A, a wallet you control | Everyone sees the transfer. The exchange alone knows A is yours |
 | 3 | Your wallet invents a secret and computes its commitment | The secret never leaves your device |
 | 4 | A sends exactly 1 ETH into the pool, publishing the commitment | Everyone sees that A deposited |
@@ -41,10 +41,10 @@ between the public one and the private one.
 flowchart TD
     F["Bank transfer"] --> X["Exchange<br/>identity verified"]
     X -->|"withdrawal, public"| A["Address A<br/>your public 0x address"]
-    A -->|"shield, PUBLIC"| Z[("Your 0zk address<br/>inside the shared pool")]
-    Z -.->|"send, PRIVATE"| S1["Someone else's 0zk"]
-    Z -.->|"swap, PRIVATE"| S2["DeFi, privately"]
-    Z -->|"unshield, PUBLIC"| OUT["Back to a public address"]
+    A -->|"shield, public"| Z[("Your 0zk address<br/>inside the shared pool")]
+    Z -.->|"send, private"| S1["Someone else's 0zk"]
+    Z -.->|"swap, private"| S2["DeFi, privately"]
+    Z -->|"unshield, public"| OUT["Back to a public address"]
 
     classDef known fill:#1f3a5f,color:#ffffff,stroke:#16293f
     classDef priv fill:#4a2d6a,color:#ffffff,stroke:#35204d
@@ -56,17 +56,17 @@ flowchart TD
 
 | # | What happens | Who can see it |
 |---|---|---|
-| 1 | Euros to exchange, buy ETH | Exchange only |
+| 1 | Fiat to exchange, buy ETH | Exchange only |
 | 2 | Withdraw to address A | Everyone. Exchange knows A is yours |
-| 3 | A calls `shield()`, sending tokens to the Railgun contract | **Everyone sees A shielded.** Tokens must physically leave a public address, and that cannot be hidden |
+| 3 | A calls `shield()`, sending tokens to the Railgun contract | Everyone sees A shielded. Tokens must physically leave a public address, and that cannot be hidden |
 | 4 | The contract records a scrambled note in a shared tree | Everyone sees a note was added. Nobody can read it |
 | 5 | You send, swap, or hold privately | Nobody. Not the amounts, not the counterparties |
-| 6 | Later, you unshield back to a public address | **Everyone sees the unshield** |
+| 6 | Later, you unshield back to a public address | Everyone sees the unshield |
 
 ### The important difference from Tornado
 
-Tornado breaks the link between **going in and coming out**. Railgun does not
-try to. It hides **everything that happens inside**.
+Tornado breaks the link between going in and coming out. Railgun does not try
+to. It hides everything that happens inside.
 
 So with Railgun, everyone can see that address A shielded. That is not a leak,
 it is unavoidable. What they cannot see is the balance, what it did, or where
@@ -74,11 +74,11 @@ it went.
 
 ---
 
-## Route 3: Fiat to Tornado to Railgun
+## Route 3: Tornado to Railgun
 
-The two combined. Tornado severs the link to your identity, Railgun hides what
-happens next. There are two versions, and the difference between them is one
-extra transfer.
+The two combined. Tornado severs the link to your identity, and Railgun hides
+what happens next. There are two visible versions, separated by one extra
+transfer.
 
 ```mermaid
 flowchart TD
@@ -103,11 +103,9 @@ flowchart TD
     class Z1,Z2 priv
 ```
 
-**The upper branch** is what this research calls *depth 0*. B both withdraws
-from Tornado and shields into Railgun. One address does both jobs.
-
-**The lower branch** is *depth 1*, or one hop. B sends to a further new address
-C, and C does the shielding. One extra step, one extra address.
+The upper branch is `depth 0`: B both withdraws from Tornado and shields into
+Railgun. The lower branch is `depth 1`: B sends to a fresh C, and C does the
+shielding.
 
 ### What each observer can see
 
@@ -131,22 +129,8 @@ flowchart LR
     class H1,H2,H3 hid
 ```
 
-Note what is on the left. Every individual step is public. What is missing is
-only the connection across the Tornado gap, and everything after the shield.
-
----
-
-## The three routes compared
-
-| | Route 1: Tornado | Route 2: Railgun | Route 3: both |
-|---|---|---|---|
-| Hides who you are | yes | no | yes |
-| Hides what you do afterwards | no | yes | yes |
-| Publicly visible entry | deposit from A | shield from A | deposit from A |
-| Publicly visible exit | payment to B | unshield | shield from B or C |
-| Where the break is | between deposit and withdrawal | after the shield | both |
-| Fresh addresses needed | one | none | one or two |
-| What remains measurable | who deposited, who was paid | who shielded, and when | the join between them |
+Every individual step is public. What is missing is only the connection across
+the Tornado gap, and everything after the shield.
 
 ---
 
