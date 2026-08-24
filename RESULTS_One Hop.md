@@ -53,22 +53,6 @@ a finding about how densely the transfer graph is connected.
 | `0x11111112…` | 422 | **1inch router** |
 | `0xdef1c0de…` | 254 | **0x Protocol proxy** |
 
-A chain running Tornado exit to WETH to shielder means one person wrapped ETH
-and an unrelated person later unwrapped some and shielded. They share a utility
-contract and nothing else. The Relay Adapt case is sharper still: that is
-Railgun's own infrastructure, so the chain reduces to the observation that both
-parties used Railgun, which is the definition of the set being searched.
-
-The designation comparison confirms it. Depth 2 is 99.7% post-designation
-against a 99.8% baseline. Identical, which is what any measure capturing nearly
-the whole population produces.
-
-**This is a ceiling rather than a limitation of the collection.** The sweep
-reached 1,826,874 addresses one hop from 125,359 seeds, a multiple of 14.6. A
-second hop applied to 1.8 million addresses reaches a substantial share of all
-active addresses on Ethereum, at which point membership establishes nothing. No
-better node or longer sweep changes this.
-
 | Depth | Shielders | Share | Reads as |
 |---|---:|---:|---|
 | 0 | 387 | 1.32% | specific |
